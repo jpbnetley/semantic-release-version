@@ -38,8 +38,11 @@ jobs:
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@users.noreply.github.com"
 
-      - name: Commit and push dist folder
+      - name: Commit dist folder
         run: |
           git add dist
-          git commit -m "chore: update dist [skip ci]"
-          git push origin main
+          git commit -m "chore: update dist [skip ci]"        
+
+      - name: Push changes
+        run: git push origin main
+        

@@ -7,7 +7,8 @@ try {
   const initialVersion = core.getInput('version')
   const versionType = core.getInput('version_type')
   const enumValue = mapValueToEnum(versionType, SymantecReleaseType)
-  if (!enumValue) {
+ 
+  if (enumValue === undefined) {
     throw new Error(
       `Value "${versionType}" is not a valid member of the SymantecReleaseType enum.`
     )
@@ -16,7 +17,7 @@ try {
   core.setOutput('new_version', newReleaseVersion)
 } catch (error) {
   if (error instanceof Error) {
-    core.setFailed(error.message)
+    core.setFailed(error)
   } else {
     core.setFailed('An unknown error occurred')
   }
