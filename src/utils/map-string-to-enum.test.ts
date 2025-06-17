@@ -1,6 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { mapStringToEnum } from './map-string-to-enum'
-import * as validateEnumModule from './validate-enum'
 
 enum Color {
   Red = 'RED',
@@ -8,37 +7,36 @@ enum Color {
   Blue = 'BLUE',
 }
 
+enum NumericEnum {
+  Zero,
+  One,
+  Two,
+}
+
 describe('mapStringToEnum', () => {
-  const enumObject = Color
-
-  beforeEach(() => {
-    vi.restoreAllMocks()
+  it('should map a valid string to the corresponding string enum value', () => {
+    expect(mapStringToEnum('RED', Color)).toBe(Color.Red)
+    expect(mapStringToEnum('GREEN', Color)).toBe(Color.Green)
+    expect(mapStringToEnum('BLUE', Color)).toBe(Color.Blue)
   })
 
-  it('returns the correct enum value when value is valid', () => {
-    vi.spyOn(validateEnumModule, 'validateEnum').mockReturnValue(true)
-    expect(mapStringToEnum('RED', enumObject)).toBe(Color.Red)
-    expect(mapStringToEnum('GREEN', enumObject)).toBe(Color.Green)
-    expect(mapStringToEnum('BLUE', enumObject)).toBe(Color.Blue)
+  it('should return undefined for an invalid string in string enum', () => {
+    expect(mapStringToEnum('YELLOW', Color)).toBeUndefined()
+    expect(mapStringToEnum('', Color)).toBeUndefined()
   })
 
-  it('returns undefined if value is not found in enum values but validateEnum returns true', () => {
-    vi.spyOn(validateEnumModule, 'validateEnum').mockReturnValue(true)
-    expect(mapStringToEnum('YELLOW', enumObject)).toBeUndefined()
+  it('should map a valid string to the corresponding numeric enum value', () => {
+    expect(mapStringToEnum('0', NumericEnum)).toBe(0)
+    expect(mapStringToEnum('1', NumericEnum)).toBe(1)
+    expect(mapStringToEnum('2', NumericEnum)).toBe(2)
   })
 
-  it('throws an error if validateEnum returns false', () => {
-    vi.spyOn(validateEnumModule, 'validateEnum').mockReturnValue(false)
-    expect(() => mapStringToEnum('RED', enumObject)).toThrowError(
-      'Value "RED" is not a valid member of the enum.'
-    )
+  it('should return undefined for an invalid string in numeric enum', () => {
+    expect(mapStringToEnum('3', NumericEnum)).toBeUndefined()
+    expect(mapStringToEnum('One', NumericEnum)).toBeUndefined()
   })
 
-  it('calls validateEnum with correct arguments', () => {
-    const spy = vi
-      .spyOn(validateEnumModule, 'validateEnum')
-      .mockReturnValue(true)
-    mapStringToEnum('RED', enumObject)
-    expect(spy).toHaveBeenCalledWith('RED', enumObject)
+  it('should return undefined if enumObject is empty', () => {
+    expect(mapStringToEnum('anything', {})).toBeUndefined()
   })
 })
