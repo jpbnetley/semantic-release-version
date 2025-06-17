@@ -1,0 +1,16 @@
+name: 'Node Output Composite Action'
+description: 'Runs a Node.js script and uses its output'
+inputs:
+  node-script:
+    description: 'Path to the Node.js script'
+    required: true
+    default: './get-version.js'
+outputs:
+  node-output:
+    description: 'Output from the Node.js script'
+    value: ${{ steps.run-node.outputs.result }}
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+  env:
+    NODE_ENV: production
