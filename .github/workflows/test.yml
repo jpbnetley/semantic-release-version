@@ -1,4 +1,5 @@
-name: Run Tests
+name: Run Tests and Build Dist
+description: This workflow runs tests and builds the project, committing changes to the dist folder if there are modifications.
 
 on:
   pull_request:
