@@ -67,4 +67,12 @@ jobs:
         run: gh pr merge --auto --squash --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
+      - name: Wait for dist automerge to complete
+        if: steps.git-check.outputs.hasModifications == 'true'
+        run: |
+          while gh pr view update-dist-${{ github.run_id }} --json merged --jq '.merged' | grep -q false; do
+            echo "Waiting for dist automerge to complete..."
+            sleep 10
+          done
+          echo "Dist automerge completed successfully."
