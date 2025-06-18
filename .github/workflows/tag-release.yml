@@ -43,11 +43,3 @@ jobs:
         run: |
           git push origin main --tags
           echo "Pushed tags to origin"
-
-      
-
-        
-          
-
-      
-        
