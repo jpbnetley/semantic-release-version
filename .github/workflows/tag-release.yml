@@ -4,8 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to set'
+        description: 'Version to update major.minor.patch'
         required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
     
 permissions:
   contents: write
@@ -37,7 +42,8 @@ jobs:
       - name: Update package json version
         run: |
           pnpm version ${{ github.event.inputs.version }}
-          echo "Version set to ${{ github.event.inputs.version }}"
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "new tag version: $PACKAGE_VERSION" 
 
       - name: Push tags
         run: |
