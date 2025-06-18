@@ -1,0 +1,24 @@
+name: Set Git User
+description: Set Git user name and email for commits
+
+inputs:
+  user_name:
+    description: 'Git user name'
+    required: false
+    default: 'github-actions'
+    type: string
+  user_email:
+    description: 'Git user email'
+    required: false
+    default: 'github-actions@users.noreply.github.com'
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set Git user.name
+      run: git config --global user.name "${{ inputs.user_name }}"
+      shell: bash
+    - name: Set Git user.email
+      run: git config --global user.email "${{ inputs.user_email }}"
+      shell: bash

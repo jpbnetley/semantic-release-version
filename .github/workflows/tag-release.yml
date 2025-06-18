@@ -35,9 +35,7 @@ jobs:
           node-version: '22'
 
       - name: Setup git config
-        run: |
-          git config --local user.name "github-actions"
-          git config --local user.email "github-actions@users.noreply.github.com"
+        uses: ./.github/actions/git-user
 
       - name: Update package json version
         run: |
