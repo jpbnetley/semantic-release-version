@@ -1,24 +1,23 @@
-import * as core from '@actions/core'
-import { updateSemanticVersion } from './update-symantic-version'
-import { SymantecReleaseType } from './types/enum/symantic-release-type'
-import { mapValueToEnum } from './utils/map-value-to-enum'
+import * as core from "@actions/core";
+import { SemanticReleaseEnumSchema } from "./schemas/release-type-schema";
+import { updateSemanticVersion } from "./update-symantic-version";
 
 try {
-  const initialVersion = core.getInput('version')
-  const versionType = core.getInput('version_type')
-  const enumValue = mapValueToEnum(versionType, SymantecReleaseType)
- 
+  const initialVersion = core.getInput("version");
+  const versionType = core.getInput("version_type");
+  const enumValue = SemanticReleaseEnumSchema.parse(versionType);
+
   if (enumValue === undefined) {
     throw new Error(
       `Value "${versionType}" is not a valid member of the SymantecReleaseType enum.`
-    )
+    );
   }
-  const newReleaseVersion = updateSemanticVersion(initialVersion, enumValue)
-  core.setOutput('new_version', newReleaseVersion)
+  const newReleaseVersion = updateSemanticVersion(initialVersion, enumValue);
+  core.setOutput("new_version", newReleaseVersion);
 } catch (error) {
   if (error instanceof Error) {
-    core.setFailed(error)
+    core.setFailed(error);
   } else {
-    core.setFailed('An unknown error occurred')
+    core.setFailed("An unknown error occurred");
   }
 }

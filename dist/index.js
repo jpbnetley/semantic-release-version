@@ -1,4 +1,5 @@
 import { createRequire } from "node:module";
+import { z } from "zod";
 
 //#region rolldown:runtime
 var __create = Object.create;
@@ -17080,6 +17081,10 @@ let SymantecReleaseType = /* @__PURE__ */ function(SymantecReleaseType$1) {
 }({});
 
 //#endregion
+//#region src/schemas/release-type-schema.ts
+const SemanticReleaseEnumSchema = z.nativeEnum(SymantecReleaseType);
+
+//#endregion
 //#region src/update-symantic-version.ts
 /**
 * Updates a semantic version string based on the specified release type.
@@ -17116,10 +17121,12 @@ var import_core = __toESM(require_core(), 1);
 try {
 	const initialVersion = import_core.getInput("version");
 	const versionType = import_core.getInput("version_type");
-	const newReleaseVersion = updateSemanticVersion(initialVersion, versionType);
+	const enumValue = SemanticReleaseEnumSchema.parse(versionType);
+	if (enumValue === void 0) throw new Error(`Value "${versionType}" is not a valid member of the SymantecReleaseType enum.`);
+	const newReleaseVersion = updateSemanticVersion(initialVersion, enumValue);
 	import_core.setOutput("new_version", newReleaseVersion);
 } catch (error$1) {
-	if (error$1 instanceof Error) import_core.setFailed(error$1.message);
+	if (error$1 instanceof Error) import_core.setFailed(error$1);
 	else import_core.setFailed("An unknown error occurred");
 }
 
