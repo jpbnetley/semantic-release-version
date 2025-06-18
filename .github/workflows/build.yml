@@ -56,6 +56,8 @@ jobs:
             sleep 10
           done
           echo "Branch status checks are clean."
+        env:
+          GH_TOKEN: ${{ github.token }}
           
       - name: Push changes
         if: steps.git-check.outputs.hasModifications == 'true'
