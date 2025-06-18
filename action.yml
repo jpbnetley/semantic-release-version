@@ -3,8 +3,10 @@ description: 'Runs a Node.js script and uses its output'
 inputs:
   version:
     description: 'Version to set'
+    type: string
     required: true
   version-type:
+  required: true
   description: 'Type of version'
   choices:
     - major
