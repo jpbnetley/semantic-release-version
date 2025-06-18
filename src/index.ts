@@ -6,12 +6,6 @@ try {
   const initialVersion = core.getInput("version");
   const versionType = core.getInput("version_type");
   const enumValue = SemanticReleaseEnumSchema.parse(versionType);
-
-  if (enumValue === undefined) {
-    throw new Error(
-      `Value "${versionType}" is not a valid member of the SemanticReleaseType enum.`
-    );
-  }
   const newReleaseVersion = updateSemanticVersion(initialVersion, enumValue);
   core.setOutput("new_version", newReleaseVersion);
 } catch (error) {
