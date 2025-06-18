@@ -54,13 +54,26 @@ jobs:
       - name: Build project
         run: pnpm run build
 
+      - name: Check for changes
+        id: git-check
+        run: |
+          if git status | grep -q modified
+          then
+            echo 'Changes found; hasModifications true' && echo "hasModifications=true" >> "$GITHUB_OUTPUT"
+          else
+            echo 'No changes found; hasModifications false' && echo "hasModifications=false"  >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup git config
+        if: steps.git-check.outputs.hasModifications == 'true'
         uses: ./.github/actions/git-user
 
       - name: Commit dist folder
+        if: steps.git-check.outputs.hasModifications == 'true'
         run: |
           git add dist
           git commit -m "chore: update dist [skip ci]"
 
       - name: Push changes
+        if: steps.git-check.outputs.hasModifications == 'true'
         run: git push
