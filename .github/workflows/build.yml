@@ -54,6 +54,7 @@ jobs:
         run: |
           git add dist
           git commit -m "chore: update dist [skip ci]"
+          git push --set-upstream origin update-dist-${{ github.run_id }}
         
       - name: Create pull request for dist changes
         if: steps.git-check.outputs.hasModifications == 'true'
