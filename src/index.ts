@@ -9,7 +9,7 @@ try {
 
   if (enumValue === undefined) {
     throw new Error(
-      `Value "${versionType}" is not a valid member of the SymantecReleaseType enum.`
+      `Value "${versionType}" is not a valid member of the SemanticReleaseType enum.`
     );
   }
   const newReleaseVersion = updateSemanticVersion(initialVersion, enumValue);
