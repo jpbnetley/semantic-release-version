@@ -38,7 +38,7 @@ jobs:
       - name: Commit dist folder
         run: |
           git add dist
-          git commit -m "chore: update dist [skip ci]
+          git commit -m "chore: update dist [skip ci]"
 
       - name: Push changes
         run: git push origin main
