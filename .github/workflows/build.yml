@@ -1,0 +1,44 @@
+name: Build and Commit Dist
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-commit-dist:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'pnpm'
+          node-version: '22'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
+        run: pnpm run build
+
+      - name: Setup git config
+        uses: ./.github/actions/git-user
+
+      - name: Commit dist folder
+        run: |
+          git add dist
+          git commit -m "chore: update dist [skip ci]
+
+      - name: Push changes
+        run: git push origin main
+        
