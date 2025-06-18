@@ -12,6 +12,7 @@ jobs:
 
     steps:
       - name: Checkout code
+        id: checkout
         uses: actions/checkout@v4
 
       - name: Setup pnpm
@@ -82,5 +83,5 @@ jobs:
       - name: Push changes
         if: steps.git-check.outputs.hasModifications == 'true'
         run: |
-          git push origin ${{ github.base_ref }}
+          git push ${{ steps.checkout.outputs.ref }}
           echo "Pushed changes to origin"
