@@ -28,6 +28,19 @@ Add the following step to your workflow:
 
 - `new-version`: The new semantic version after applying the bump
 
+#### Example of usage
+```yml
+- name: Update semantic version
+  id: semantic-version
+  uses: jpbnetley/npm-version-release-action
+  with:
+    version: '1.2.3'
+    version-type: 'minor'
+
+- name: Get new version
+  run: echo "new version: ${{ steps.semantic-version.new-version }}"
+```
+
 
 ## Development
 
