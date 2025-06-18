@@ -5,13 +5,15 @@ inputs:
     description: 'Version to set'
     type: string
     required: true
+  
   version-type:
-  required: true
-  description: 'Type of version'
-  choices:
-    - major
-    - minor
-    - patch
+    required: true
+    description: 'Type of version'
+    type: choice
+    options:
+      - major
+      - minor
+      - patch
   
 outputs:
   new-version:
