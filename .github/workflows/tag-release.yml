@@ -1,4 +1,4 @@
-name: Build and Commit Dist
+name: Tag release
 
 on:
   workflow_dispatch:
