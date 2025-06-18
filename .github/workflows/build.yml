@@ -52,7 +52,6 @@ jobs:
       - name: Commit dist folder
         if: steps.git-check.outputs.hasModifications == 'true'
         run: |
-          git checkout -b update-dist-${{ github.run_id }}
           git add dist
           git commit -m "chore: update dist [skip ci]"
         
