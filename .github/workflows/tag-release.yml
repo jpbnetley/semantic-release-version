@@ -1,0 +1,51 @@
+name: Build and Commit Dist
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to update major.minor.patch'
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+    
+permissions:
+  contents: write
+
+jobs:
+  tag-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'pnpm'
+          node-version: '22'
+
+      - name: Setup git config
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@users.noreply.github.com"
+
+      - name: Update package json version
+        run: |
+          pnpm version ${{ github.event.inputs.version }}
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "new tag version: $PACKAGE_VERSION" 
+
+      - name: Push tags
+        run: |
+          git push origin main --tags
+          echo "Pushed tags to origin"
