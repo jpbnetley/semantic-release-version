@@ -1,4 +1,4 @@
-name: Run Tests and Build Dist
+name: Run Tests
 description: This workflow runs tests and builds the project, committing changes to the dist folder if there are modifications.
 
 on:
