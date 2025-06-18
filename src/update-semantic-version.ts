@@ -1,3 +1,4 @@
+import { InvalidVersionFormatError } from "./messages/error/invalid-version-format";
 import { SemanticReleaseType } from "./types/enum/semantic-release-type";
 
 /**
@@ -13,8 +14,11 @@ export function updateSemanticVersion(
   releaseType: SemanticReleaseType
 ): string {
   const versionParts = currentVersion.split(".").map(Number);
-  if (versionParts.length !== 3) {
-    throw new Error("Invalid version format. Expected format: x.y.z");
+  if (
+    versionParts.length !== 3 ||
+    !versionParts.every((part) => !isNaN(part))
+  ) {
+    throw InvalidVersionFormatError;
   }
   switch (releaseType) {
     case SemanticReleaseType.Major:

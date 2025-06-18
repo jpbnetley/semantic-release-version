@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { updateSemanticVersion } from "./update-semantic-version";
 import { SemanticReleaseType } from "./types/enum/semantic-release-type";
+import { InvalidVersionFormatError } from "./messages/error/invalid-version-format";
 
 describe("updateSemanticVersion", () => {
   it("increments major version and resets minor and patch", () => {
@@ -51,5 +52,32 @@ describe("updateSemanticVersion", () => {
     expect(() => updateSemanticVersion("1.2.3", "invalid sym")).toThrow(
       "Unknown release type"
     );
+  });
+});
+
+describe("updateSemanticVersion - versionParts validation", () => {
+  it("should throw an error if any version part is not a valid number", () => {
+    // Invalid version string with a non-numeric part
+    const invalidVersion = "1.2.x";
+    expect(() =>
+      updateSemanticVersion(invalidVersion, SemanticReleaseType.Patch)
+    ).toThrow(InvalidVersionFormatError.message);
+  });
+
+  it("should not return a version with NaN", () => {
+    // Another invalid version string
+    const invalidVersion = "1.two.3";
+    expect(() =>
+      updateSemanticVersion(invalidVersion, SemanticReleaseType.Minor)
+    ).toThrow(InvalidVersionFormatError.message);
+  });
+
+  it("should work for valid version strings", () => {
+    const validVersion = "1.2.3";
+    const result = updateSemanticVersion(
+      validVersion,
+      SemanticReleaseType.Patch
+    );
+    expect(result).toBe("1.2.4");
   });
 });
