@@ -17,6 +17,7 @@ permissions:
 
 jobs:
   tag-release:
+    name: Tag Release
     runs-on: ubuntu-latest
 
     steps:

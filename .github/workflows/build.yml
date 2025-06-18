@@ -1,0 +1,62 @@
+name: Build and Push Dist
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Setup git config
+        uses: ./.github/actions/git-user
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          if git status | grep -q modified
+          then
+            echo 'Changes found; hasModifications true' && echo "hasModifications=true" >> "$GITHUB_OUTPUT"
+          else
+            echo 'No changes found; hasModifications false' && echo "hasModifications=false"  >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit dist folder
+        if: steps.git-check.outputs.hasModifications == 'true'
+        run: |
+          git add dist
+          git commit -m "chore: update dist [skip ci]"
+
+      - name: Wait for branch status checks
+        if: steps.git-check.outputs.hasModifications == 'true'
+        run: |
+          echo "Waiting for branch status checks to complete..."
+          while [[ "$(gh pr view --json mergeStateStatus -q '.mergeStateStatus')" != "CLEAN" ]]; do
+            sleep 10
+          done
+          echo "Branch status checks are clean."
+          
+      - name: Push changes
+        if: steps.git-check.outputs.hasModifications == 'true'
+        run: git push origin main

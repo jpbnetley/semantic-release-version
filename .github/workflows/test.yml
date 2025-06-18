@@ -1,4 +1,5 @@
 name: Run Tests
+description: This workflow runs tests and builds the project, committing changes to the dist folder if there are modifications.
 
 on:
   pull_request:
@@ -6,10 +7,12 @@ on:
 
 jobs:
   test:
+    name: Test
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
+        id: checkout
         uses: actions/checkout@v4
 
       - name: Setup pnpm
