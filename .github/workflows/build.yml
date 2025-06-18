@@ -1,8 +1,6 @@
 name: Build and Push Dist
 
 on:
-   merge_group:
-    types: [checks_requested]
   push:
     branches:
       - main
@@ -49,6 +47,9 @@ jobs:
         run: |
           git add dist
           git commit -m "chore: update dist [skip ci]"
+
+      - name: Run tests
+        run: pnpm run test
 
       # - name: Wait for branch status checks
       #   if: steps.git-check.outputs.hasModifications == 'true'
