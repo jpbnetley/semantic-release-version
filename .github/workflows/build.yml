@@ -6,7 +6,12 @@ on:
       - main
 
 jobs:
+  test:
+    name: Test
+    uses: ./.github/workflows/test.yml
+  
   build-and-commit:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: write

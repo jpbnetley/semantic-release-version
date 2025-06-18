@@ -4,6 +4,8 @@ description: This workflow runs tests and builds the project, committing changes
 on:
   pull_request:
     branches: [ main ]
+  
+  workflow_call:
 
 jobs:
   test:
