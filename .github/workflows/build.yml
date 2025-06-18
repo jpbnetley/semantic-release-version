@@ -76,3 +76,5 @@ jobs:
             sleep 10
           done
           echo "Dist automerge completed successfully."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
