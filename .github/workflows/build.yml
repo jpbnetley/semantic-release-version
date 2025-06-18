@@ -5,15 +5,12 @@ on:
     branches:
       - main
 
-jobs:
-  Test:
-    uses: ./.github/workflows/test.yml
-  
+jobs:  
   build-and-commit:
-    needs: Test
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout code
@@ -48,10 +45,26 @@ jobs:
             echo 'No changes found; hasModifications false' && echo "hasModifications=false"  >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Checkout new branch
+        if: steps.git-check.outputs.hasModifications == 'true'
+        run: git checkout -b update-dist-${{ github.run_id }}
+    
       - name: Commit dist folder
         if: steps.git-check.outputs.hasModifications == 'true'
         run: |
+          git checkout -b update-dist-${{ github.run_id }}
           git add dist
           git commit -m "chore: update dist [skip ci]"
-          git push origin main
+        
+      - name: Create pull request for dist changes
+        if: steps.git-check.outputs.hasModifications == 'true'
+        run: gh pr create --base main --head update-dist-${{ github.run_id }} --title "Update dist folder" --body "This PR updates the dist folder with the latest build changes."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge pull request for dist changes
+        if: steps.git-check.outputs.hasModifications == 'true'
+        run: gh pr merge --auto --squash --delete-branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
