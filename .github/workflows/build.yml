@@ -6,12 +6,11 @@ on:
       - main
 
 jobs:
-  test:
-    name: Test
+  Test:
     uses: ./.github/workflows/test.yml
   
   build-and-commit:
-    needs: test
+    needs: Test
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -52,20 +51,6 @@ jobs:
         run: |
           git add dist
           git commit -m "chore: update dist [skip ci]"
-
-      - name: Run tests
-        run: pnpm run test
-
-      # - name: Wait for branch status checks
-      #   if: steps.git-check.outputs.hasModifications == 'true'
-      #   run: |
-      #     echo "Waiting for branch status checks to complete..."
-      #     while [[ "$(gh pr view --json mergeStateStatus -q '.mergeStateStatus')" != "CLEAN" ]]; do
-      #       sleep 10
-      #     done
-      #     echo "Branch status checks are clean."
-      #   env:
-      #     GH_TOKEN: ${{ github.token }}
           
       - name: Push changes
         if: steps.git-check.outputs.hasModifications == 'true'
