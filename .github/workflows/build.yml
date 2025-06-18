@@ -71,7 +71,9 @@ jobs:
       - name: Wait for dist automerge to complete
         if: steps.git-check.outputs.hasModifications == 'true'
         run: |
-          while gh pr view update-dist-${{ github.run_id }} --json merged --jq '.merged' | grep -q false; do
+          BRANCH="update-dist-${{ github.run_id }}"
+          while gh pr list --head "$BRANCH" --state open --limit 1 --json number,title,url --jq '.[0]'
+          do
             echo "Waiting for dist automerge to complete..."
             sleep 10
           done
