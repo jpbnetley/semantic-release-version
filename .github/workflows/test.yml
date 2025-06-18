@@ -82,5 +82,5 @@ jobs:
       - name: Push changes
         if: steps.git-check.outputs.hasModifications == 'true'
         run: |
-          git push origin ${{ github.ref_name }}
+          git push origin ${{ github.base_ref }}
           echo "Pushed changes to origin"
