@@ -43,5 +43,5 @@ jobs:
 
       - name: Push tags
         run: |
-          git push origin main --tags
+          git push --follow-tags
           echo "Pushed tags to origin"
