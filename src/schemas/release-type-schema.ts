@@ -1,4 +1,4 @@
 import { z } from "zod/v4";
-import { SymantecReleaseType } from "../types/enum/symantic-release-type";
+import { SemanticReleaseType } from "../types/enum/semantic-release-type";
 
-export const SemanticReleaseEnumSchema = z.enum(SymantecReleaseType);
+export const SemanticReleaseEnumSchema = z.enum(SemanticReleaseType);

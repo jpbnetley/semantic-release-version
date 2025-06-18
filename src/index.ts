@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
 import { SemanticReleaseEnumSchema } from "./schemas/release-type-schema";
-import { updateSemanticVersion } from "./update-symantic-version";
+import { updateSemanticVersion } from "./update-semantic-version";
 
 try {
   const initialVersion = core.getInput("version");
