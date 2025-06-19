@@ -51,7 +51,7 @@ jobs:
         uses: ./.github/actions/new-branch-merge
         with:
           branch_name: ${{ steps.generate-branch-name.outputs.branch_name }}
-          commit_command: "git add dist && git commit -m 'chore: update dist folder with latest build changes'"
+          commit_command: "git add dist && git commit -m 'chore: update dist folder with latest build changes [skip ci]'"
           main_branch: "main"
           GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PAT }}
 

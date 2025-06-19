@@ -53,7 +53,7 @@ runs:
 
   - name: Create pull request for dist changes
     shell: bash
-    run: gh pr create --base main --head ${{ inputs.branch_name }} --title "Update release tag" --body "This PR updates to the latest git tag. [skip ci]"
+    run: gh pr create --base main --head ${{ inputs.branch_name }} --title "Update release tag" --body "This PR updates to the latest git tag."
     env:
       GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
 
