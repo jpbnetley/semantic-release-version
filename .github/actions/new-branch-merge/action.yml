@@ -40,7 +40,7 @@ runs:
 
     - name: Create pull request for dist changes
       shell: bash
-      run: gh pr create --base main --head ${{ inputs.branch_name }} --title "Update dist folder" --body "This PR updates the dist folder with the latest build changes. [skip ci]"
+      run: gh pr create --base main --head ${{ inputs.branch_name }} --title "Update dist folder" --body "This PR updates the dist folder with the latest build changes."
       env:
         GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
 
