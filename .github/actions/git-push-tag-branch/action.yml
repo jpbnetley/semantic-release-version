@@ -17,10 +17,10 @@ inputs:
     required: true
     type: string
 
-  output:
-    tag_name:
-      description: 'The name of the tag created'
-      value: ${{ steps.tag-version.outputs.tag_name }}
+output:
+  tag_name:
+    description: 'The name of the tag created'
+    value: ${{ steps.tag-version.outputs.tag_name }}
 
 runs:
   using: "composite"
