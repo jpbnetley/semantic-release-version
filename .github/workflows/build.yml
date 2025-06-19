@@ -77,7 +77,7 @@ jobs:
 
       - name: Checkout main branch
         if: steps.git-check.outputs.hasModifications == 'true'
-        run: git checkout ${{ github.event.base_ref }}
+        run: git checkout main
 
       - name: Debug 3
         run: |
