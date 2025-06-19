@@ -33,18 +33,26 @@ jobs:
           cache: 'pnpm'
           node-version: '22'
 
+      - name: Generate branch name
+        id: generate-branch-name
+        run: echo "branch_name=update-tag-${{ github.run_id }}" >> "$GITHUB_OUTPUT"
+
       - name: Setup git config
         uses: ./.github/actions/git-user
 
-      - name: Update package json version
-        run: |
-          pnpm version ${{ github.event.inputs.version }}
-          PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          echo "new tag version: $PACKAGE_VERSION" 
+      - name: Create new branch and push tag
+        id: create-tag-branch
+        uses: ./.github/actions/git-push-tag-branch
+        with:
+          branch_name: ${{ steps.generate-branch-name.outputs.branch_name }}
+          main_branch: "main"
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PAT }}
 
-      - name: Push tags
+      - name: Wait for tag automerge to complete
+        uses: ./.github/actions/wait-for-automerge
+        with:
+          branch_name: ${{ steps.generate-branch-name.outputs.branch_name }}
+
+      - name: Output tag name
         run: |
-          git push --follow-tags
-          echo "Pushed tags to origin"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          echo "Tag created: ${{ steps.create-tag-branch.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY

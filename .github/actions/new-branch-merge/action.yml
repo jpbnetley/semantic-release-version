@@ -1,0 +1,49 @@
+name: New Branch Merge
+description: pushes changes to a new branch and creates a pull request for merging into the main branch
+
+inputs:
+  branch_name:
+    description: 'Branch name for the new branch'
+    required: false
+    default: 'update-dist-${{ github.run_id }}'
+    type: string
+  commit_command:
+    description: 'Commit command to run after checking out the new branch'
+    required: false
+    default: 'git commit dist && git commit -m "chore: update dist folder with latest build changes"'
+    type: string
+  main_branch:
+    description: 'Main branch to merge into'
+    required: false
+    default: 'main'
+    type: string
+  GITHUB_PERSONAL_ACCESS_TOKEN:
+    description: 'GitHub Personal Access Token with permissions to manage pull requests'
+    required: true
+    type: string
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout new branch
+      run: git checkout -b ${{ inputs.branch_name }}
+    
+    - name: Commit dist folder
+      run: ${{ inputs.commit_command }}
+
+    - name: Push dist folder
+      run: git push --set-upstream origin ${{ inputs.branch_name }}
+
+    - name: Create pull request for dist changes
+      run: gh pr create --base main --head ${{ inputs.branch_name }} --title "Update dist folder" --body "This PR updates the dist folder with the latest build changes."
+      env:
+        GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
+
+    - name: Merge pull request for dist changes
+      run: gh pr merge --auto --squash --delete-branch
+      env:
+        GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
+
+    - name: Checkout main branch
+      run: git checkout ${{ inputs.main_branch }}

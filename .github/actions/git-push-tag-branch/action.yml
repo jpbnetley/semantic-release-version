@@ -1,0 +1,61 @@
+name: Git Push Tag Branch
+description: Pushes changes to a new branch and creates a pull request for merging into the main
+
+inputs:
+  branch_name:
+    description: 'Branch name for the new branch'
+    required: false
+    default: 'update-dist-${{ github.run_id }}'
+    type: string
+  main_branch:
+    description: 'Main branch to merge into'
+    required: false
+    default: 'main'
+    type: string
+  GITHUB_PERSONAL_ACCESS_TOKEN:
+    description: 'GitHub Personal Access Token with permissions to manage pull requests'
+    required: true
+    type: string
+
+  output:
+    tag_name:
+      description: 'The name of the tag created'
+      value: ${{ steps.tag-version.outputs.tag_name }}
+
+runs:
+  using: "composite"
+  steps:
+
+  - name: Checkout new branch
+    run: git checkout -b ${{ inputs.branch_name }}
+
+  - name: Update package json version
+    id: tag-version
+    run: |
+      pnpm version ${{ github.event.inputs.version }}
+      PACKAGE_VERSION=$(node -p "require('./package.json').version")
+      echo "new tag version: $PACKAGE_VERSION"
+      echo "tag_name=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+
+  - name: Push tags
+    run: |
+      git push --follow-tags
+      echo "Pushed tags to origin"
+    env:
+      GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+  - name: Push tags
+    run: git push --set-upstream origin ${{ inputs.branch_name }}
+
+  - name: Create pull request for dist changes
+    run: gh pr create --base main --head ${{ inputs.branch_name }} --title "Update release tag" --body "This PR updates to the latest git tag."
+    env:
+      GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
+
+  - name: Merge pull request for dist changes
+    run: gh pr merge --auto --squash --delete-branch
+    env:
+      GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
+
+  - name: Checkout main branch
+    run: git checkout ${{ inputs.main_branch }}
