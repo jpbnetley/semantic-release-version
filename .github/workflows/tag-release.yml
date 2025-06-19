@@ -67,12 +67,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - name: Create Github release
         run: |
           gh release create ${{ needs.tag-release.outputs.tag_name }} \
             --title "Release ${{ needs.tag-release.outputs.tag_name }}" \
             --notes "Release notes for version ${{ needs.tag-release.outputs.tag_name }}" \
-            --generate-notes
+            --notes-from-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
