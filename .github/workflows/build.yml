@@ -37,7 +37,7 @@ jobs:
 
       - name: Check for changes
         id: git-check
-        uses: ./.github/actions/git-check
+        uses: ./.github/actions/git-diff
 
       - name: Generate branch name
         id: generate-branch-name
