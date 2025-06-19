@@ -1,0 +1,20 @@
+name: Git Diff Check
+description: Checks if there are any modifications in the repository and sets an output variable accordingly.
+
+outputs:
+  has_modifications:
+    description: 'Indicates if there are modifications in the repository'
+    value: ${{ steps.git-check.outputs.hasModifications }}
+
+runs:
+  using: "composite"
+  steps:
+  - name: Check for changes
+    id: git-check
+    run: |
+      if git status | grep -q modified
+      then
+        echo 'Changes found; hasModifications true' && echo "hasModifications=true" >> "$GITHUB_OUTPUT"
+      else
+        echo 'No changes found; hasModifications false' && echo "hasModifications=false"  >> "$GITHUB_OUTPUT"
+      fi

@@ -1,0 +1,59 @@
+name: Wait for Automerge
+description: Waits for the automerge of a pull request to complete, checking the status of the pull request until it is either merged or closed.
+
+inputs:
+  branch_name:
+    description: 'Branch name for the new branch'
+    required: false
+    default: 'update-dist-${{ github.run_id }}'
+    type: string
+  main_branch:
+    description: 'Main branch to merge into'
+    required: false
+    default: 'main'
+    type: string
+
+  GITHUB_TOKEN:
+    description: 'GitHub Personal Access Token with permissions to manage pull requests'
+    required: true
+    type: string
+
+
+runs:
+  using: "composite"
+  steps:
+
+  - name: Wait for dist automerge to complete
+    if: steps.git-check.outputs.hasModifications == 'true'
+    run: |
+      BRANCH="${{ inputs.branch_name }}"
+      MAX_RETRIES=30
+      SLEEP_SECONDS=10
+      
+      for ((i=1; i<=MAX_RETRIES; i++)); do
+        pr_info=$(gh pr list --head "$BRANCH" --state all --limit 1 --json number,state,mergedAt --jq '.[0]')
+        pr_number=$(echo "$pr_info" | jq -r '.number')
+        pr_state=$(echo "$pr_info" | jq -r '.state')
+        merged_at=$(echo "$pr_info" | jq -r '.mergedAt')
+
+        if [ "$pr_number" = "null" ]; then
+          echo "No pull request found for branch $BRANCH (attempt $i/$MAX_RETRIES)"
+        elif [ "$pr_state" = "OPEN" ]; then
+          echo "PR #$pr_number is still open (attempt $i/$MAX_RETRIES). Waiting..."
+        else
+          if [ "$merged_at" != "null" ]; then
+            echo "PR #$pr_number is merged."
+            exit 0
+          else
+            echo "PR #$pr_number is closed but not merged."
+            exit 1
+          fi
+        fi
+
+        if [ $i -lt $MAX_RETRIES ]; then
+          sleep $SLEEP_SECONDS
+        else
+          echo "Max retries reached. Exiting."
+          exit 1
+        fi
+      done

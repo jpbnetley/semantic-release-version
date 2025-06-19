@@ -37,82 +37,25 @@ jobs:
 
       - name: Check for changes
         id: git-check
-        run: |
-          if git status | grep -q modified
-          then
-            echo 'Changes found; hasModifications true' && echo "hasModifications=true" >> "$GITHUB_OUTPUT"
-          else
-            echo 'No changes found; hasModifications false' && echo "hasModifications=false"  >> "$GITHUB_OUTPUT"
-          fi
+        uses: ./.github/actions/git-check
 
       - name: Generate branch name
-        if: steps.git-check.outputs.hasModifications == 'true'
         id: generate-branch-name
+        if: steps.git-check.outputs.hasModifications == 'true'
         run: echo "branch_name=update-dist-${{ github.run_id }}" >> "$GITHUB_OUTPUT"
 
-      - name: Checkout new branch
+      - name: Create new branch and merge changes
+        id: merge-changes
         if: steps.git-check.outputs.hasModifications == 'true'
-        run: git checkout -b ${{ steps.generate-branch-name.outputs.branch_name }}
-
-      - name: Commit dist folder
-        if: steps.git-check.outputs.hasModifications == 'true'
-        run: |
-          git add dist
-          git commit -m "chore: update dist folder with latest build changes"
-        
-      - name: Push dist folder
-        if: steps.git-check.outputs.hasModifications == 'true'
-        run: git push --set-upstream origin ${{ steps.generate-branch-name.outputs.branch_name }}
-        
-      - name: Create pull request for dist changes
-        if: steps.git-check.outputs.hasModifications == 'true'
-        run: gh pr create --base main --head ${{ steps.generate-branch-name.outputs.branch_name }} --title "Update dist folder" --body "This PR updates the dist folder with the latest build changes."
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-
-      - name: Merge pull request for dist changes
-        if: steps.git-check.outputs.hasModifications == 'true'
-        run: gh pr merge --auto --squash --delete-branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-
-      - name: Checkout main branch
-        if: steps.git-check.outputs.hasModifications == 'true'
-        run: git checkout main
+        uses: ./.github/actions/new-branch-merge
+        with:
+          branch_name: ${{ steps.generate-branch-name.outputs.branch_name }}
+          commit_command: "git add dist && git commit -m 'chore: update dist folder with latest build changes'"
+          main_branch: "main"
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PAT }}
 
       - name: Wait for dist automerge to complete
         if: steps.git-check.outputs.hasModifications == 'true'
-        run: |
-          BRANCH="update-dist-${{ github.run_id }}"
-          MAX_RETRIES=30
-          SLEEP_SECONDS=10
-          
-          for ((i=1; i<=MAX_RETRIES; i++)); do
-            pr_info=$(gh pr list --head "$BRANCH" --state all --limit 1 --json number,state,mergedAt --jq '.[0]')
-            pr_number=$(echo "$pr_info" | jq -r '.number')
-            pr_state=$(echo "$pr_info" | jq -r '.state')
-            merged_at=$(echo "$pr_info" | jq -r '.mergedAt')
-
-            if [ "$pr_number" = "null" ]; then
-              echo "No pull request found for branch $BRANCH (attempt $i/$MAX_RETRIES)"
-            elif [ "$pr_state" = "OPEN" ]; then
-              echo "PR #$pr_number is still open (attempt $i/$MAX_RETRIES). Waiting..."
-            else
-              if [ "$merged_at" != "null" ]; then
-                echo "PR #$pr_number is merged."
-                exit 0
-              else
-                echo "PR #$pr_number is closed but not merged."
-                exit 1
-              fi
-            fi
-
-            if [ $i -lt $MAX_RETRIES ]; then
-              sleep $SLEEP_SECONDS
-            else
-              echo "Max retries reached. Exiting."
-              exit 1
-            fi
-          done
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ./.github/actions/wait-for-automerge
+        with:
+          branch_name: ${{ steps.generate-branch-name.outputs.branch_name }}
