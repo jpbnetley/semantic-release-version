@@ -75,6 +75,12 @@ jobs:
           git log --oneline -- .github/workflows/
           ls .github/workflows/
 
+      - name: Merge pull request for dist changes
+        if: steps.git-check.outputs.hasModifications == 'true'
+        run: gh pr merge --auto --squash --delete-branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Checkout main branch
         if: steps.git-check.outputs.hasModifications == 'true'
         run: git checkout main
@@ -84,12 +90,6 @@ jobs:
           git branch --show-current
           git log --oneline -- .github/workflows/
           ls .github/workflows/
-
-      - name: Merge pull request for dist changes
-        if: steps.git-check.outputs.hasModifications == 'true'
-        run: gh pr merge --auto --squash --delete-branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Wait for pr checks to complete
         if: steps.git-check.outputs.hasModifications == 'true'
