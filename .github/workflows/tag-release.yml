@@ -19,6 +19,8 @@ jobs:
   tag-release:
     name: Tag Release
     runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.create-tag-branch.outputs.tag_name }}
 
     steps:
       - name: Checkout repository
@@ -50,9 +52,20 @@ jobs:
 
       - name: Wait for tag automerge to complete
         uses: ./.github/actions/wait-for-automerge
-        with:
-          branch_name: ${{ steps.generate-branch-name.outputs.branch_name }}
 
       - name: Output tag name
         run: |
           echo "Tag created: ${{ steps.create-tag-branch.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "Tag created: ${{ steps.create-tag-branch.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "tag_name=${{ steps.create-tag-branch.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
+
+  create-github-release:
+    needs: tag-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Github release
+        run: |
+          gh release create ${{ needs.tag-release.outputs.tag_name }} \
+            --title "Release ${{ needs.tag-release.outputs.tag_name }}" \
+            --notes "Release notes for version ${{ needs.tag-release.outputs.tag_name }}" \
+            --generate-notes
