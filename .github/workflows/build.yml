@@ -80,45 +80,39 @@ jobs:
         if: steps.git-check.outputs.hasModifications == 'true'
         run: git checkout main
 
-      - name: Wait for pr checks to complete
+      - name: Wait for dist automerge to complete
         if: steps.git-check.outputs.hasModifications == 'true'
-        run: gh pr checks --watch ${{ steps.generate-branch-name.outputs.branch_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-
-      # - name: Wait for dist automerge to complete
-      #   if: steps.git-check.outputs.hasModifications == 'true'
-      #   run: |
-      #     BRANCH="update-dist-${{ github.run_id }}"
-      #     MAX_RETRIES=30
-      #     SLEEP_SECONDS=10
+        run: |
+          BRANCH="update-dist-${{ github.run_id }}"
+          MAX_RETRIES=30
+          SLEEP_SECONDS=10
           
-      #     for ((i=1; i<=MAX_RETRIES; i++)); do
-      #       pr_info=$(gh pr list --head "$BRANCH" --state all --limit 1 --json number,state,mergedAt --jq '.[0]')
-      #       pr_number=$(echo "$pr_info" | jq -r '.number')
-      #       pr_state=$(echo "$pr_info" | jq -r '.state')
-      #       merged_at=$(echo "$pr_info" | jq -r '.mergedAt')
+          for ((i=1; i<=MAX_RETRIES; i++)); do
+            pr_info=$(gh pr list --head "$BRANCH" --state all --limit 1 --json number,state,mergedAt --jq '.[0]')
+            pr_number=$(echo "$pr_info" | jq -r '.number')
+            pr_state=$(echo "$pr_info" | jq -r '.state')
+            merged_at=$(echo "$pr_info" | jq -r '.mergedAt')
 
-      #       if [ "$pr_number" = "null" ]; then
-      #         echo "No pull request found for branch $BRANCH (attempt $i/$MAX_RETRIES)"
-      #       elif [ "$pr_state" = "OPEN" ]; then
-      #         echo "PR #$pr_number is still open (attempt $i/$MAX_RETRIES). Waiting..."
-      #       else
-      #         if [ "$merged_at" != "null" ]; then
-      #           echo "PR #$pr_number is merged."
-      #           exit 0
-      #         else
-      #           echo "PR #$pr_number is closed but not merged."
-      #           exit 1
-      #         fi
-      #       fi
+            if [ "$pr_number" = "null" ]; then
+              echo "No pull request found for branch $BRANCH (attempt $i/$MAX_RETRIES)"
+            elif [ "$pr_state" = "OPEN" ]; then
+              echo "PR #$pr_number is still open (attempt $i/$MAX_RETRIES). Waiting..."
+            else
+              if [ "$merged_at" != "null" ]; then
+                echo "PR #$pr_number is merged."
+                exit 0
+              else
+                echo "PR #$pr_number is closed but not merged."
+                exit 1
+              fi
+            fi
 
-      #       if [ $i -lt $MAX_RETRIES ]; then
-      #         sleep $SLEEP_SECONDS
-      #       else
-      #         echo "Max retries reached. Exiting."
-      #         exit 1
-      #       fi
-      #     done
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            if [ $i -lt $MAX_RETRIES ]; then
+              sleep $SLEEP_SECONDS
+            else
+              echo "Max retries reached. Exiting."
+              exit 1
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
