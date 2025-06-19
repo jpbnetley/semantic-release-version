@@ -42,8 +42,8 @@ runs:
   - name: Push tags
     shell: bash
     run: |
-      git push --follow-tags
-      echo "Pushed tags to origin"
+      git push --follow-tags --set-upstream origin ${{ inputs.branch_name }}
+      echo "Pushed tags"
     env:
       GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
 
@@ -57,7 +57,7 @@ runs:
     env:
       GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
 
-  - name: Merge pull request for dist changes
+  - name: Merge pull request for tag changes
     shell: bash
     run: gh pr merge --auto --squash --delete-branch
     env:
