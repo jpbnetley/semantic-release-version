@@ -55,12 +55,18 @@ jobs:
           git add dist
           git commit -m "chore: update dist folder with latest build changes"
           git push --set-upstream origin update-dist-${{ github.run_id }}
+          
         
       - name: Create pull request for dist changes
         if: steps.git-check.outputs.hasModifications == 'true'
         run: gh pr create --base main --head update-dist-${{ github.run_id }} --title "Update dist folder" --body "This PR updates the dist folder with the latest build changes."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Debug
+        run: |
+          git log --oneline -- .github/workflows/
+          ls .github/workflows/
 
       - name: Merge pull request for dist changes
         if: steps.git-check.outputs.hasModifications == 'true'
