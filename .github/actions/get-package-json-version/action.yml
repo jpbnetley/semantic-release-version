@@ -1,22 +1,6 @@
 name: Git current package json version
 description: 'Get the current version from package.json'
 
-inputs:
-  branch_name:
-    description: 'Branch name for the new branch'
-    required: false
-    default: 'update-dist-${{ github.run_id }}'
-    type: string
-  main_branch:
-    description: 'Main branch to merge into'
-    required: false
-    default: 'main'
-    type: string
-  GITHUB_PERSONAL_ACCESS_TOKEN:
-    description: 'GitHub Personal Access Token with permissions to manage pull requests'
-    required: true
-    type: string
-
 outputs:
   tag_name:
     description: 'The name of the tag created'
