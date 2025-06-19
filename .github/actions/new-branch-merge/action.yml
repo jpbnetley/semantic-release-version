@@ -27,23 +27,29 @@ runs:
   using: "composite"
   steps:
     - name: Checkout new branch
+      shell: bash
       run: git checkout -b ${{ inputs.branch_name }}
     
     - name: Commit dist folder
+      shell: bash
       run: ${{ inputs.commit_command }}
 
     - name: Push dist folder
+      shell: bash
       run: git push --set-upstream origin ${{ inputs.branch_name }}
 
     - name: Create pull request for dist changes
+      shell: bash
       run: gh pr create --base main --head ${{ inputs.branch_name }} --title "Update dist folder" --body "This PR updates the dist folder with the latest build changes."
       env:
         GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
 
     - name: Merge pull request for dist changes
+      shell: bash
       run: gh pr merge --auto --squash --delete-branch
       env:
         GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
 
     - name: Checkout main branch
+      shell: bash
       run: git checkout ${{ inputs.main_branch }}
