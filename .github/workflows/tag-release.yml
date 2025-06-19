@@ -69,3 +69,5 @@ jobs:
             --title "Release v${{ needs.tag-release.outputs.tag_name }}" \
             --notes "Release notes for version v${{ needs.tag-release.outputs.tag_name }}" \
             --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
