@@ -47,10 +47,6 @@ runs:
     env:
       GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
 
-  - name: Push tags
-    shell: bash
-    run: git push --set-upstream origin ${{ inputs.branch_name }}
-
   - name: Create pull request for dist changes
     shell: bash
     run: gh pr create --base main --head ${{ inputs.branch_name }} --title "Update release tag" --body "This PR updates to the latest git tag."
