@@ -39,26 +39,26 @@ runs:
       echo "new tag version: $PACKAGE_VERSION"
       echo "tag_name=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
 
-  - name: Push tags
-    shell: bash
-    run: |
-      git push --follow-tags --set-upstream origin ${{ inputs.branch_name }}
-      echo "Pushed tags"
-    env:
-      GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
+  # - name: Push tags
+  #   shell: bash
+  #   run: |
+  #     git push --follow-tags --set-upstream origin ${{ inputs.branch_name }}
+  #     echo "Pushed tags"
+  #   env:
+  #     GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
 
-  - name: Create pull request for dist changes
-    shell: bash
-    run: gh pr create --base main --head ${{ inputs.branch_name }} --title "Update release tag" --body "This PR updates to the latest git tag."
-    env:
-      GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
+  # - name: Create pull request for dist changes
+  #   shell: bash
+  #   run: gh pr create --base main --head ${{ inputs.branch_name }} --title "Update release tag" --body "This PR updates to the latest git tag."
+  #   env:
+  #     GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
 
-  - name: Merge pull request for tag changes
-    shell: bash
-    run: gh pr merge --auto --squash --delete-branch
-    env:
-      GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
+  # - name: Merge pull request for tag changes
+  #   shell: bash
+  #   run: gh pr merge --auto --squash --delete-branch
+  #   env:
+  #     GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
 
-  - name: Checkout main branch
-    shell: bash
-    run: git checkout ${{ inputs.main_branch }}
+  # - name: Checkout main branch
+  #   shell: bash
+  #   run: git checkout ${{ inputs.main_branch }}
