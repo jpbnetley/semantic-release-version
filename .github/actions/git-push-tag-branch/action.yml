@@ -17,7 +17,7 @@ inputs:
     required: true
     type: string
 
-output:
+outputs:
   tag_name:
     description: 'The name of the tag created'
     value: ${{ steps.tag-version.outputs.tag_name }}
