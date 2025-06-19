@@ -20,7 +20,7 @@ jobs:
     name: Tag Release
     runs-on: ubuntu-latest
     outputs:
-      tag_name: ${{ steps.create-tag-branch.outputs.tag_name }}
+      tag_name: ${{ steps.package-json-version.outputs.tag_name }}
 
     steps:
       - name: Checkout repository
@@ -44,21 +44,18 @@ jobs:
       - name: Setup git config
         uses: ./.github/actions/git-user
 
-      - name: Create new branch and push tag
-        id: create-tag-branch
-        uses: ./.github/actions/git-push-tag-branch
+      - name: Get current package.json version
+        id: package-json-version
+        uses: ./.github/actions/get-package-json-version
         with:
           branch_name: ${{ steps.generate-branch-name.outputs.branch_name }}
           main_branch: "main"
           GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PAT }}
 
-      # - name: Wait for tag automerge to complete
-      #   uses: ./.github/actions/wait-for-automerge
-
       - name: Output tag name
         run: |
-          echo "Tag created: ${{ steps.create-tag-branch.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "tag_name=${{ steps.create-tag-branch.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
+          echo "Tag created: ${{ steps.package-json-version.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "tag_name=${{ steps.package-json-version.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
 
   create-github-release:
     name: Create GitHub Release
