@@ -23,6 +23,10 @@ runs:
   using: "composite"
   steps:
 
+  - name: Checkout new branch
+    shell: bash
+    run: git checkout -b ${{ inputs.branch_name }}
+
   - name: Update package json version
     id: tag-version
     shell: bash
