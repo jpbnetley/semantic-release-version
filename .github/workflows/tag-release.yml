@@ -61,6 +61,7 @@ jobs:
           echo "tag_name=${{ steps.create-tag-branch.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
 
   create-github-release:
+    name: Create GitHub Release
     needs: tag-release
     runs-on: ubuntu-latest
     steps:
@@ -70,3 +71,5 @@ jobs:
             --title "Release ${{ needs.tag-release.outputs.tag_name }}" \
             --notes "Release notes for version ${{ needs.tag-release.outputs.tag_name }}" \
             --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
