@@ -60,5 +60,4 @@ try {
 	if (error instanceof Error) core.setFailed(error);
 	else core.setFailed("An unknown error occurred");
 }
-
 //#endregion
