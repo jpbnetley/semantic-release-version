@@ -63,6 +63,10 @@ jobs:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Create Github release
         run: |
           gh release create v${{ needs.tag-release.outputs.tag_name }} \
