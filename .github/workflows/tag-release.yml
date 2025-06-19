@@ -19,8 +19,6 @@ jobs:
   tag-release:
     name: Tag Release
     runs-on: ubuntu-latest
-    outputs:
-      tag_name: ${{ steps.package-json-version.outputs.tag_name }}
 
     steps:
       - name: Checkout repository
@@ -47,29 +45,17 @@ jobs:
       - name: Get current package.json version
         id: package-json-version
         uses: ./.github/actions/get-package-json-version
-        with:
-          branch_name: ${{ steps.generate-branch-name.outputs.branch_name }}
-          main_branch: "main"
-          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PAT }}
 
       - name: Output tag name
         run: |
           echo "Tag created: ${{ steps.package-json-version.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
           echo "tag_name=${{ steps.package-json-version.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
 
-  create-github-release:
-    name: Create GitHub Release
-    needs: tag-release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
       - name: Create Github release
         run: |
-          gh release create ${{ needs.tag-release.outputs.tag_name }} \
-            --title "Release ${{ needs.tag-release.outputs.tag_name }}" \
-            --notes "Release notes for version ${{ needs.tag-release.outputs.tag_name }}" \
+          gh release create ${{ steps.package-json-version.outputs.tag_name }} \
+            --title "Release ${{ steps.package-json-version.outputs.tag_name }}" \
+            --notes "Release notes for version ${{ steps.package-json-version.outputs.tag_name }}" \
             --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
