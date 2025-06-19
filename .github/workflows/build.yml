@@ -45,10 +45,15 @@ jobs:
             echo 'No changes found; hasModifications false' && echo "hasModifications=false"  >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Generate branch name
+        if: steps.git-check.outputs.hasModifications == 'true'
+        id: generate-branch-name
+        run: echo "branch_name=update-dist-${{ github.run_id }}" >> "$GITHUB_OUTPUT"
+
       - name: Checkout new branch
         if: steps.git-check.outputs.hasModifications == 'true'
-        run: git checkout -b update-dist-${{ github.run_id }}
-    
+        run: git checkout -b ${{ steps.generate-branch-name.outputs.branch_name }}
+
       - name: Commit dist folder
         if: steps.git-check.outputs.hasModifications == 'true'
         run: |
@@ -57,11 +62,11 @@ jobs:
         
       - name: Push dist folder
         if: steps.git-check.outputs.hasModifications == 'true'
-        run: git push --set-upstream origin update-dist-${{ github.run_id }}
+        run: git push --set-upstream origin ${{ steps.generate-branch-name.outputs.branch_name }}
         
       - name: Create pull request for dist changes
         if: steps.git-check.outputs.hasModifications == 'true'
-        run: gh pr create --base main --head update-dist-${{ github.run_id }} --title "Update dist folder" --body "This PR updates the dist folder with the latest build changes."
+        run: gh pr create --base main --head ${{ steps.generate-branch-name.outputs.branch_name }} --title "Update dist folder" --body "This PR updates the dist folder with the latest build changes."
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
@@ -77,7 +82,7 @@ jobs:
 
       - name: Wait for pr checks to complete
         if: steps.git-check.outputs.hasModifications == 'true'
-        run: gh pr checks --watch update-dist-${{ github.run_id }}
+        run: gh pr checks --watch ${{ steps.generate-branch-name.outputs.branch_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
