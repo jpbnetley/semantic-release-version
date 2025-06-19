@@ -27,10 +27,12 @@ runs:
   steps:
 
   - name: Checkout new branch
+    shell: bash
     run: git checkout -b ${{ inputs.branch_name }}
 
   - name: Update package json version
     id: tag-version
+    shell: bash
     run: |
       pnpm version ${{ github.event.inputs.version }}
       PACKAGE_VERSION=$(node -p "require('./package.json').version")
@@ -38,6 +40,7 @@ runs:
       echo "tag_name=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
 
   - name: Push tags
+    shell: bash
     run: |
       git push --follow-tags
       echo "Pushed tags to origin"
@@ -45,17 +48,21 @@ runs:
       GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
   - name: Push tags
+    shell: bash
     run: git push --set-upstream origin ${{ inputs.branch_name }}
 
   - name: Create pull request for dist changes
+    shell: bash
     run: gh pr create --base main --head ${{ inputs.branch_name }} --title "Update release tag" --body "This PR updates to the latest git tag."
     env:
       GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
 
   - name: Merge pull request for dist changes
+    shell: bash
     run: gh pr merge --auto --squash --delete-branch
     env:
       GITHUB_TOKEN: ${{ inputs.GITHUB_PERSONAL_ACCESS_TOKEN }}
 
   - name: Checkout main branch
+    shell: bash
     run: git checkout ${{ inputs.main_branch }}

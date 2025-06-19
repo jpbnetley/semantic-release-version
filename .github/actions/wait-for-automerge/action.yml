@@ -24,6 +24,7 @@ runs:
   steps:
 
   - name: Wait for dist automerge to complete
+    shell: bash
     if: steps.git-check.outputs.hasModifications == 'true'
     run: |
       BRANCH="${{ inputs.branch_name }}"

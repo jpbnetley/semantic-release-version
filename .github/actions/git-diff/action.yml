@@ -10,6 +10,7 @@ runs:
   using: "composite"
   steps:
   - name: Check for changes
+    shell: bash
     id: git-check
     run: |
       if git status | grep -q modified
