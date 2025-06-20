@@ -15,6 +15,9 @@ inputs:
     required: true
 
 outputs:
+  previous_version_name:
+    description: 'The previous tag name before the update'
+    value: ${{ steps.tag-version.outputs.tag_name }}
   tag_name:
     description: 'The name of the tag created'
     value: ${{ steps.tag-version.outputs.tag_name }}
@@ -31,10 +34,12 @@ runs:
     id: tag-version
     shell: bash
     run: |
+      previous_version=$(node -p "require('./package.json').version")
       pnpm version ${{ github.event.inputs.version }}
       PACKAGE_VERSION=$(node -p "require('./package.json').version")
       echo "new tag version: $PACKAGE_VERSION"
       echo "tag_name=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+      echo "previous_version_name=$previous_version" >> "$GITHUB_OUTPUT"
 
   - name: Push tags
     shell: bash
