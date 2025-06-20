@@ -39,6 +39,7 @@ runs:
       PACKAGE_VERSION=$(node -p "require('./package.json').version")
       echo "new tag version: $PACKAGE_VERSION"
       echo "tag_name=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+      echo "previous_version_name: $previous_version"
       echo "previous_version_name=$previous_version" >> "$GITHUB_OUTPUT"
 
   - name: Push tags
