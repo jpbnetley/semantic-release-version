@@ -17,10 +17,10 @@ inputs:
 outputs:
   previous_version_name:
     description: 'The previous tag name before the update'
-    value: ${{ steps.tag-version.outputs.tag_name }}
+    value: ${{ steps.tag-version.outputs.previous_version_name }}
   tag_name:
     description: 'The name of the tag created'
-    value: ${{ steps.tag-version.outputs.previous_version_name }}
+    value: ${{ steps.tag-version.outputs.tag_name }}
 
 runs:
   using: "composite"
