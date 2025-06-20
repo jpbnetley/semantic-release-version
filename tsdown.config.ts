@@ -6,4 +6,5 @@ export default defineConfig({
   dts: {
     isolatedDeclarations: true,
   },
+  noExternal: ['zod', '@actions/core', '@actions/github'],
 })
