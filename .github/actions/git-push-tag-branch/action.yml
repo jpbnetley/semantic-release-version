@@ -31,7 +31,7 @@ runs:
     id: tag-version
     shell: bash
     run: |
-      pnpm version ${{ github.event.inputs.version }} --sign-git-tag
+      pnpm version ${{ github.event.inputs.version }}
       PACKAGE_VERSION=$(node -p "require('./package.json').version")
       echo "new tag version: $PACKAGE_VERSION"
       echo "tag_name=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
