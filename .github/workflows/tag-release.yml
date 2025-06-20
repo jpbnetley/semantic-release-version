@@ -67,6 +67,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Fetch tags
+        run: git fetch --tags
+
       - name: Create Github release
         run: |
           gh release create v${{ needs.tag-release.outputs.tag_name }} \
