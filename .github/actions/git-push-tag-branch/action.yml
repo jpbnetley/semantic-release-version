@@ -20,7 +20,7 @@ outputs:
     value: ${{ steps.tag-version.outputs.tag_name }}
   tag_name:
     description: 'The name of the tag created'
-    value: ${{ steps.tag-version.outputs.tag_name }}
+    value: ${{ steps.tag-version.outputs.previous_version_name }}
 
 runs:
   using: "composite"
