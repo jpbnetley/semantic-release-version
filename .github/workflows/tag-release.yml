@@ -71,8 +71,6 @@ jobs:
         run: |
           gh release create v${{ needs.tag-release.outputs.tag_name }} \
             --title "Release v${{ needs.tag-release.outputs.tag_name }}" \
-            --notes "Release notes for version v${{ needs.tag-release.outputs.tag_name }}" \
-            --generate-notes
             --notes-from-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
