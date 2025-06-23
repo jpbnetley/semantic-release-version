@@ -6,7 +6,7 @@ try {
   const initialVersion = core.getInput("version");
   const versionType = core.getInput("version_type");
 
-  console.log('initial version', versionType)
+  console.log('initial version', initialVersion)
   console.log('initial versionType', versionType)
 
   const enumValue = SemanticReleaseEnumSchema.parse(versionType);
