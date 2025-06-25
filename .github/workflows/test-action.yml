@@ -15,6 +15,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4 
 
+      - name: debug
+        run: ls -la
+
       - name: test patch version
         id: test-patch
         uses: ./action.yml
