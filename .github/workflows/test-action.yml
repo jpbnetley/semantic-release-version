@@ -1,0 +1,89 @@
+name: Test action
+on: 
+  pull_request:
+    branches:
+      - main
+    
+
+permissions:
+  contents: write
+
+jobs:
+
+  build-code:
+    name: Build Code
+    uses: ./.github/workflows/build-code.yml
+
+  patch:
+    runs-on: ubuntu-latest
+    needs: build-code
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 
+
+      - name: debug
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Files in current directory:"
+          ls -la
+
+      - name: test patch version
+        id: test-patch
+        uses: ./action.yml
+        with:
+          version: 0.0.1
+          version-type: patch
+
+      - name: Check output
+        run: | 
+            if [ "${{ steps.test-patch.outputs.version }}" != "0.0.2" ]; then
+              echo "Expected version 0.0.2, but got ${{ steps.test-patch.outputs.version }}"
+              exit 1
+            fi
+
+  minor:
+    runs-on: ubuntu-latest
+    needs: build-code
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 
+
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+
+      - name: test patch version
+        id: test-minor
+        uses: ./action.yml
+        with:
+          version: 0.0.1
+          version-type: minor
+
+      - name: Check output
+        run: | 
+            if [ "${{ steps.test-minor.outputs.version }}" != "0.1.0" ]; then
+              echo "Expected version 0.1.0, but got ${{ steps.test-minor.outputs.version }}"
+              exit 1
+            fi
+
+  major:
+    runs-on: ubuntu-latest
+    needs: build-code
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: test patch version
+        id: test-major
+        uses: ./action.yml
+        with:
+          version: 0.0.1
+          version-type: major
+
+      - name: Check output
+        run: | 
+            if [ "${{ steps.test-major.outputs.version }}" != "1.0.0" ]; then
+              echo "Expected version 1.0.0, but got ${{ steps.test-major.outputs.version }}"
+              exit 1
+            fi
