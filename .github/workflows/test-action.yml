@@ -9,14 +9,17 @@ permissions:
   contents: write
 
 jobs:
+
+  build-code:
+    name: Build Code
+    uses: ./.github/workflows/build-code.yml
+
   patch:
     runs-on: ubuntu-latest
+    needs: build-code
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4 
-
-      - name: debug
-        run: ls -la
 
       - name: test patch version
         id: test-patch
@@ -34,6 +37,7 @@ jobs:
 
   minor:
     runs-on: ubuntu-latest
+    needs: build-code
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4 
@@ -54,6 +58,7 @@ jobs:
 
   major:
     runs-on: ubuntu-latest
+    needs: build-code
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
