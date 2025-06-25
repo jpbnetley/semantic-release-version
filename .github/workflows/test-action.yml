@@ -21,6 +21,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4 
 
+      - name: debug
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Files in current directory:"
+          ls -la
+
       - name: test patch version
         id: test-patch
         uses: ./action.yml
