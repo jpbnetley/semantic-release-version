@@ -4,10 +4,7 @@ import { updateSemanticVersion } from "./update-semantic-version";
 
 try {
   const initialVersion = core.getInput("version");
-  const versionType = core.getInput("version_type");
-
-  console.log('initial version', initialVersion)
-  console.log('initial versionType', versionType)
+  const versionType = core.getInput("version-type");
 
   const enumValue = SemanticReleaseEnumSchema.parse(versionType);
   const newReleaseVersion = updateSemanticVersion(initialVersion, enumValue);
