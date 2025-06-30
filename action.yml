@@ -1,5 +1,7 @@
 name: 'Node Output Composite Action'
 description: 'Runs a Node.js script and uses its output'
+icon: arrow-up-right
+color: green
 inputs:
   version:
     description: 'Version to set'
