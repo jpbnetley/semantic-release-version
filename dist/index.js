@@ -384,7 +384,7 @@ var require_tunnel$1 = __commonJS({ "node_modules/.pnpm/tunnel@0.0.6/node_module
 			if (res.statusCode !== 200) {
 				debug$1("tunneling socket could not be established, statusCode=%d", res.statusCode);
 				socket.destroy();
-				var error$1 = new Error("tunneling socket could not be established, statusCode=" + res.statusCode);
+				var error$1 = /* @__PURE__ */ new Error("tunneling socket could not be established, statusCode=" + res.statusCode);
 				error$1.code = "ECONNRESET";
 				options.request.emit("error", error$1);
 				self.removeSocket(placeholder);
@@ -393,7 +393,7 @@ var require_tunnel$1 = __commonJS({ "node_modules/.pnpm/tunnel@0.0.6/node_module
 			if (head.length > 0) {
 				debug$1("got illegal response body from proxy");
 				socket.destroy();
-				var error$1 = new Error("got illegal response body from proxy");
+				var error$1 = /* @__PURE__ */ new Error("got illegal response body from proxy");
 				error$1.code = "ECONNRESET";
 				options.request.emit("error", error$1);
 				self.removeSocket(placeholder);
@@ -406,7 +406,7 @@ var require_tunnel$1 = __commonJS({ "node_modules/.pnpm/tunnel@0.0.6/node_module
 		function onError$1(cause) {
 			connectReq.removeAllListeners();
 			debug$1("tunneling socket could not be established, cause=%s\n", cause.message, cause.stack);
-			var error$1 = new Error("tunneling socket could not be established, cause=" + cause.message);
+			var error$1 = /* @__PURE__ */ new Error("tunneling socket could not be established, cause=" + cause.message);
 			error$1.code = "ECONNRESET";
 			options.request.emit("error", error$1);
 			self.removeSocket(placeholder);
@@ -1093,7 +1093,7 @@ var require_util$6 = __commonJS({ "node_modules/.pnpm/undici@5.29.0/node_modules
 		if (!signal) return;
 		if (typeof signal.throwIfAborted === "function") signal.throwIfAborted();
 		else if (signal.aborted) {
-			const err = new Error("The operation was aborted");
+			const err = /* @__PURE__ */ new Error("The operation was aborted");
 			err.name = "AbortError";
 			throw err;
 		}
@@ -1508,10 +1508,10 @@ var require_Dicer = __commonJS({ "node_modules/.pnpm/@fastify+busboy@2.1.1/node_
 			if (!this._finished) {
 				const self = this;
 				process.nextTick(function() {
-					self.emit("error", new Error("Unexpected end of multipart data"));
+					self.emit("error", /* @__PURE__ */ new Error("Unexpected end of multipart data"));
 					if (self._part && !self._ignoreData) {
 						const type = self._isPreamble ? "Preamble" : "Part";
-						self._part.emit("error", new Error(type + " terminated early due to unexpected end of multipart data"));
+						self._part.emit("error", /* @__PURE__ */ new Error(type + " terminated early due to unexpected end of multipart data"));
 						self._part.push(null);
 						process.nextTick(function() {
 							self._realFinish = true;
@@ -3770,7 +3770,7 @@ var require_webidl = __commonJS({ "node_modules/.pnpm/undici@5.29.0/node_modules
 	webidl$14.util = {};
 	webidl$14.errors = {};
 	webidl$14.errors.exception = function(message) {
-		return new TypeError(`${message.header}: ${message.message}`);
+		return /* @__PURE__ */ new TypeError(`${message.header}: ${message.message}`);
 	};
 	webidl$14.errors.conversionFailed = function(context) {
 		const plural = context.types.length === 1 ? "" : " one of";
@@ -4847,7 +4847,7 @@ Content-Type: ${value.type || "application/octet-stream"}\r\n\r\n`);
 						entries = new URLSearchParams(text);
 					} catch (err) {
 						// istanbul ignore next: Unclear when new URLSearchParams can fail on a string.
-						throw Object.assign(new TypeError(), { cause: err });
+						throw Object.assign(/* @__PURE__ */ new TypeError(), { cause: err });
 					}
 					const formData = new FormData$1();
 					for (const [name, value] of entries) formData.append(name, value);
@@ -6956,7 +6956,7 @@ var require_client = __commonJS({ "node_modules/.pnpm/undici@5.29.0/node_modules
 		if (typeof reqHeaders === "string") headers = Request$3[kHTTP2CopyHeaders](reqHeaders.trim());
 		else headers = reqHeaders;
 		if (upgrade$1) {
-			errorRequest(client, request$1, new Error("Upgrade not supported for H2"));
+			errorRequest(client, request$1, /* @__PURE__ */ new Error("Upgrade not supported for H2"));
 			return false;
 		}
 		try {
@@ -7951,7 +7951,7 @@ var require_readable = __commonJS({ "node_modules/.pnpm/undici@5.29.0/node_modul
 				}) : noop;
 				this.on("close", function() {
 					signalListenerCleanup();
-					if (signal && signal.aborted) reject(signal.reason || Object.assign(new Error("The operation was aborted"), { name: "AbortError" }));
+					if (signal && signal.aborted) reject(signal.reason || Object.assign(/* @__PURE__ */ new Error("The operation was aborted"), { name: "AbortError" }));
 					else resolve(null);
 				}).on("error", noop).on("data", function(chunk) {
 					limit -= chunk.length;
@@ -10167,7 +10167,7 @@ var require_response = __commonJS({ "node_modules/.pnpm/undici@5.29.0/node_modul
 			try {
 				parsedURL = new URL(url, getGlobalOrigin$2());
 			} catch (err) {
-				throw Object.assign(new TypeError("Failed to parse URL from " + url), { cause: err });
+				throw Object.assign(/* @__PURE__ */ new TypeError("Failed to parse URL from " + url), { cause: err });
 			}
 			if (!redirectStatusSet$1.has(status)) throw new RangeError("Invalid status code " + status);
 			const responseObject = new Response$2();
@@ -10943,7 +10943,7 @@ var require_fetch = __commonJS({ "node_modules/.pnpm/undici@5.29.0/node_modules/
 				return Promise.resolve();
 			}
 			if (response.type === "error") {
-				p.reject(Object.assign(new TypeError("fetch failed"), { cause: response.error }));
+				p.reject(Object.assign(/* @__PURE__ */ new TypeError("fetch failed"), { cause: response.error }));
 				return Promise.resolve();
 			}
 			responseObject = new Response$1();
@@ -11281,7 +11281,6 @@ var require_fetch = __commonJS({ "node_modules/.pnpm/undici@5.29.0/node_modules/
 			if (httpRequest.mode === "only-if-cached") return makeNetworkError("only if cached");
 			const forwardResponse = await httpNetworkFetch(httpFetchParams, includeCredentials, isNewConnectionFetch);
 			if (!safeMethodsSet.has(httpRequest.method) && forwardResponse.status >= 200 && forwardResponse.status <= 399) {}
-			if (revalidatingFlag && forwardResponse.status === 304) {}
 			if (response == null) response = forwardResponse;
 		}
 		response.urlList = [...httpRequest.urlList];
@@ -14900,7 +14899,7 @@ var require_lib = __commonJS({ "node_modules/.pnpm/@actions+http-client@2.2.3/no
 				return new Promise((resolve, reject) => {
 					function callbackForResult(err, res) {
 						if (err) reject(err);
-						else if (!res) reject(new Error("Unknown error"));
+						else if (!res) reject(/* @__PURE__ */ new Error("Unknown error"));
 						else resolve(res);
 					}
 					this.requestRawWithCallback(info$1, data, callbackForResult);
@@ -14935,7 +14934,7 @@ var require_lib = __commonJS({ "node_modules/.pnpm/@actions+http-client@2.2.3/no
 			});
 			req.setTimeout(this._socketTimeout || 3 * 6e4, () => {
 				if (socket) socket.end();
-				handleResult(new Error(`Request timeout: ${info$1.options.path}`));
+				handleResult(/* @__PURE__ */ new Error(`Request timeout: ${info$1.options.path}`));
 			});
 			req.on("error", function(err) {
 				handleResult(err);
@@ -16305,7 +16304,7 @@ var require_toolrunner = __commonJS({ "node_modules/.pnpm/@actions+exec@1.1.1/no
 					state.on("debug", (message) => {
 						this._debug(message);
 					});
-					if (this.options.cwd && !(yield ioUtil.exists(this.options.cwd))) return reject(new Error(`The cwd: ${this.options.cwd} does not exist!`));
+					if (this.options.cwd && !(yield ioUtil.exists(this.options.cwd))) return reject(/* @__PURE__ */ new Error(`The cwd: ${this.options.cwd} does not exist!`));
 					const fileName = this._getSpawnFileName();
 					const cp$1 = child.spawn(fileName, this._getSpawnArgs(optionsNonNull), this._getSpawnOptions(this.options, fileName));
 					let stdbuffer = "";
@@ -16434,9 +16433,9 @@ var require_toolrunner = __commonJS({ "node_modules/.pnpm/@actions+exec@1.1.1/no
 		_setResult() {
 			let error$1;
 			if (this.processExited) {
-				if (this.processError) error$1 = new Error(`There was an error when attempting to execute the process '${this.toolPath}'. This may indicate the process failed to start. Error: ${this.processError}`);
-				else if (this.processExitCode !== 0 && !this.options.ignoreReturnCode) error$1 = new Error(`The process '${this.toolPath}' failed with exit code ${this.processExitCode}`);
-				else if (this.processStderr && this.options.failOnStdErr) error$1 = new Error(`The process '${this.toolPath}' failed because one or more lines were written to the STDERR stream`);
+				if (this.processError) error$1 = /* @__PURE__ */ new Error(`There was an error when attempting to execute the process '${this.toolPath}'. This may indicate the process failed to start. Error: ${this.processError}`);
+				else if (this.processExitCode !== 0 && !this.options.ignoreReturnCode) error$1 = /* @__PURE__ */ new Error(`The process '${this.toolPath}' failed with exit code ${this.processExitCode}`);
+				else if (this.processStderr && this.options.failOnStdErr) error$1 = /* @__PURE__ */ new Error(`The process '${this.toolPath}' failed because one or more lines were written to the STDERR stream`);
 			}
 			if (this.timeout) {
 				clearTimeout(this.timeout);
@@ -17131,12 +17130,11 @@ function jsonStringifyReplacer(_, value) {
 function cached(getter) {
 	const set = false;
 	return { get value() {
-		if (!set) {
+		{
 			const value = getter();
 			Object.defineProperty(this, "value", { value });
 			return value;
 		}
-		throw new Error("cached value already set");
 	} };
 }
 function nullish(input) {
@@ -17151,12 +17149,11 @@ function defineLazy(object, key, getter) {
 	const set = false;
 	Object.defineProperty(object, key, {
 		get() {
-			if (!set) {
+			{
 				const value = getter();
 				object[key] = value;
 				return value;
 			}
-			throw new Error("cached value already set");
 		},
 		set(v) {
 			Object.defineProperty(object, key, { value: v });
@@ -17167,7 +17164,7 @@ function defineLazy(object, key, getter) {
 function randomString(length = 10) {
 	const chars = "abcdefghijklmnopqrstuvwxyz";
 	let str = "";
-	for (let i = 0; i < length; i++) str += chars[Math.floor(Math.random() * chars.length)];
+	for (let i = 0; i < length; i++) str += chars[Math.floor(Math.random() * 26)];
 	return str;
 }
 const captureStackTrace = Error.captureStackTrace ? Error.captureStackTrace : (..._args) => {};
@@ -17634,7 +17631,7 @@ const $ZodUnion = /* @__PURE__ */ $constructor("$ZodUnion", (inst, def) => {
 	defineLazy(inst._zod, "pattern", () => {
 		if (def.options.every((o) => o._zod.pattern)) {
 			const patterns = def.options.map((o) => o._zod.pattern);
-			return new RegExp(`^(${patterns.map((p) => cleanRegex(p.source)).join("|")})$`);
+			return /* @__PURE__ */ new RegExp(`^(${patterns.map((p) => cleanRegex(p.source)).join("|")})$`);
 		}
 		return void 0;
 	});
@@ -17747,7 +17744,7 @@ const $ZodEnum = /* @__PURE__ */ $constructor("$ZodEnum", (inst, def) => {
 	$ZodType.init(inst, def);
 	const values = getEnumValues(def.entries);
 	inst._zod.values = new Set(values);
-	inst._zod.pattern = new RegExp(`^(${values.filter((k) => propertyKeyTypes.has(typeof k)).map((o) => typeof o === "string" ? escapeRegex(o) : o.toString()).join("|")})$`);
+	inst._zod.pattern = /* @__PURE__ */ new RegExp(`^(${values.filter((k) => propertyKeyTypes.has(typeof k)).map((o) => typeof o === "string" ? escapeRegex(o) : o.toString()).join("|")})$`);
 	inst._zod.parse = (payload, _ctx) => {
 		const input = payload.value;
 		if (inst._zod.values.has(input)) return payload;
@@ -17785,7 +17782,7 @@ const $ZodOptional = /* @__PURE__ */ $constructor("$ZodOptional", (inst, def) =>
 	});
 	defineLazy(inst._zod, "pattern", () => {
 		const pattern = def.innerType._zod.pattern;
-		return pattern ? new RegExp(`^(${cleanRegex(pattern.source)})?$`) : void 0;
+		return pattern ? /* @__PURE__ */ new RegExp(`^(${cleanRegex(pattern.source)})?$`) : void 0;
 	});
 	inst._zod.parse = (payload, ctx) => {
 		if (payload.value === void 0) return payload;
@@ -17798,7 +17795,7 @@ const $ZodNullable = /* @__PURE__ */ $constructor("$ZodNullable", (inst, def) =>
 	defineLazy(inst._zod, "optout", () => def.innerType._zod.optout);
 	defineLazy(inst._zod, "pattern", () => {
 		const pattern = def.innerType._zod.pattern;
-		return pattern ? new RegExp(`^(${cleanRegex(pattern.source)}|null)$`) : void 0;
+		return pattern ? /* @__PURE__ */ new RegExp(`^(${cleanRegex(pattern.source)}|null)$`) : void 0;
 	});
 	defineLazy(inst._zod, "values", () => {
 		return def.innerType._zod.values ? new Set([...def.innerType._zod.values, null]) : void 0;
@@ -18382,7 +18379,7 @@ const SemanticReleaseEnumSchema = _enum(SemanticReleaseType);
 
 //#endregion
 //#region src/messages/error/invalid-version-format.ts
-const InvalidVersionFormatError = new Error("Invalid version format. Expected format: x.y.z");
+const InvalidVersionFormatError = /* @__PURE__ */ new Error("Invalid version format. Expected format: x.y.z");
 
 //#endregion
 //#region src/update-semantic-version.ts
