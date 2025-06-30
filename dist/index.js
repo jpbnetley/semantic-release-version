@@ -18420,7 +18420,7 @@ function updateSemanticVersion(currentVersion, releaseType) {
 var import_core = __toESM(require_core(), 1);
 try {
 	const initialVersion = import_core.getInput("version");
-	const versionType = import_core.getInput("version_type");
+	const versionType = import_core.getInput("version-type");
 	const enumValue = SemanticReleaseEnumSchema.parse(versionType);
 	const newReleaseVersion = updateSemanticVersion(initialVersion, enumValue);
 	import_core.setOutput("new_version", newReleaseVersion);
