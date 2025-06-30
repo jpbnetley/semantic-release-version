@@ -18423,7 +18423,7 @@ try {
 	const versionType = import_core.getInput("version-type");
 	const enumValue = SemanticReleaseEnumSchema.parse(versionType);
 	const newReleaseVersion = updateSemanticVersion(initialVersion, enumValue);
-	import_core.setOutput("new_version", newReleaseVersion);
+	import_core.setOutput("new-version", newReleaseVersion);
 } catch (error$1) {
 	if (error$1 instanceof Error) import_core.setFailed(error$1);
 	else import_core.setFailed("An unknown error occurred");

@@ -9,7 +9,7 @@ try {
   const enumValue = SemanticReleaseEnumSchema.parse(versionType);
   const newReleaseVersion = updateSemanticVersion(initialVersion, enumValue);
 
-  core.setOutput("new_version", newReleaseVersion);
+  core.setOutput("new-version", newReleaseVersion);
 } catch (error) {
   if (error instanceof Error) {
     core.setFailed(error);
